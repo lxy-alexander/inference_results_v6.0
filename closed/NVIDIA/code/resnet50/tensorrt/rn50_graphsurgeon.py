@@ -23,6 +23,7 @@ import json
 import numpy as np
 import onnx
 import onnx_graphsurgeon as gs
+import os
 
 from nvmitten.constants import Precision
 from nvmitten.nvidia.builder import ONNXNetwork
@@ -238,6 +239,10 @@ class RN50GraphSurgeon(ONNXNetwork):
         self.disable_beta1_smallk = disable_beta1_smallk
 
     def fuse_ops(self):
+        if os.environ.get("RN50_DISABLE_FUSIONS", "0") == "1":
+            logging.info("RN50_DISABLE_FUSIONS=1, skipping ResNet50 plugin fusions")
+            return
+
         Res2Mega = self.fuse_res2_mega
         Beta1Smallk = self.fuse_beta1_conv
 

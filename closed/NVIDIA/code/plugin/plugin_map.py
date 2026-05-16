@@ -104,4 +104,5 @@ class LoadablePlugins(Enum):
 base_plugin_map = {
     Benchmark.DLRMv2: [LoadablePlugins.DLRMv2EmbeddingLookupPlugin],
     Benchmark.Retinanet: [LoadablePlugins.NMSOptPlugin, LoadablePlugins.RetinaNetConcatOutputPlugin],
+    Benchmark.ResNet50: []
 }

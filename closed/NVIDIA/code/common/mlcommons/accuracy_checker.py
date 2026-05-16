@@ -924,6 +924,21 @@ class GptOss120bAccuracyChecker(AccuracyChecker):
         env = dict()
         return _AccuracyScriptCommand(str(self.venv_path / "bin" / "python3"), argv, env)
 
+@autoconfigure
+class ResNet50AccuracyChecker(AccuracyChecker):
+    """Accuracy checker implementation for ResNet50 benchmark."""
+
+    def __init__(self, wl: Workload):
+        super().__init__(wl, "vision/classification_and_detection/tools/accuracy-imagenet.py")
+        self.val_map_path = paths.WORKING_DIR / "data_maps" / "imagenet" / "val_map.txt"
+
+    def get_cmd(self) -> _AccuracyScriptCommand:
+        argv = [paths.MLCOMMONS_INF_REPO / self.mlcommons_module_path,
+                f"--mlperf-accuracy-file {self.log_file}",
+                f"--imagenet-val-file {self.val_map_path}",
+                "--dtype int32"]
+        return _AccuracyScriptCommand("python3", argv, dict())
+
 
 G_ACCURACY_CHECKER_MAP = {C.Benchmark.BERT: BERTAccuracyChecker,
                           C.Benchmark.DLRMv2: DLRMv2AccuracyChecker,
@@ -939,7 +954,8 @@ G_ACCURACY_CHECKER_MAP = {C.Benchmark.BERT: BERTAccuracyChecker,
                           C.Benchmark.RGAT: RGATAccuracyChecker,
                           C.Benchmark.SDXL: SDXLAccuracyChecker,
                           C.Benchmark.WHISPER: WhisperAccuracyChecker,
-                          C.Benchmark.WAN22_A14B: Wan22AccuracyChecker}
+                          C.Benchmark.WAN22_A14B: Wan22AccuracyChecker,
+                          C.Benchmark.ResNet50: ResNet50AccuracyChecker}
 """Dict[Benchmark, AccuracyChecker]: Maps a Benchmark to its AccuracyChecker"""
 
 
